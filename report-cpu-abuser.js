@@ -19,21 +19,18 @@ const findCurrentCulprit = async () => findCulprit((await si.processes()).list)
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-;(async () => {
+const isSthUsingLotsPower = async () => {
   const culprit1 = await findCurrentCulprit()
-  if (!culprit1) {
-    console.log('All good!')
-    return
-  }
-
+  if (!culprit1) return null
   await sleep(500)
-
   const culprit2 = await findCurrentCulprit()
-  if (culprit2 && r.eqBy(r.prop('command'), culprit1, culprit2)) {
-    console.log("Something's using lots of power.")
+  if (culprit2 && r.eqBy(r.prop('command'), culprit1, culprit2)) return culprit2
+}
+;(async () => {
+  if (await isSthUsingLotsPower()) {
+    console.log(':zap:')
     notifier.notify("Something's using lots of power. Better check.")
     return
   }
-
-  console.log('All good!')
+  console.log(':thumbsup:')
 })()
