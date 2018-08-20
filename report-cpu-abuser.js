@@ -4,6 +4,7 @@ const r = require('ramda')
 const notifier = require('node-notifier')
 const si = require('systeminformation')
 const path = require('path')
+const opn = require('opn')
 
 const findCulprit = r.pipe(
   r.filter(
@@ -27,14 +28,19 @@ const isSthUsingLotsPower = async () => {
   const culprit2 = await findCurrentCulprit()
   if (culprit2 && r.eqBy(r.prop('command'), culprit1, culprit2)) return culprit2
 }
+
+const openActivityMonitor = () =>
+  opn('/Applications/Utilities/Activity Monitor.app', { wait: false })
 ;(async () => {
   if (await isSthUsingLotsPower()) {
     console.log(':zap:')
     notifier.notify({
       title: 'Alert',
       message: "Something's using lots of power. Better check.",
-      icon: path.join(__dirname, 'high-voltage-sign_26a1.png')
+      icon: path.join(__dirname, 'high-voltage-sign_26a1.png'),
+      wait: true
     })
+    notifier.on('click', openActivityMonitor)
     return
   }
   console.log(':thumbsup:')
