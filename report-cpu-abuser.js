@@ -31,17 +31,24 @@ const isSthUsingLotsPower = async () => {
 
 const openActivityMonitor = () =>
   opn('/Applications/Utilities/Activity Monitor.app', { wait: false })
-;(async () => {
+
+const showNotification = () => {
+  notifier.notify({
+    title: 'Alert',
+    message: "Something's using lots of power. Better check.",
+    icon: path.join(__dirname, 'high-voltage-sign_26a1.png'),
+    wait: true
+  })
+  notifier.on('click', openActivityMonitor)
+}
+
+const reportCpuAbuser = async () => {
   if (await isSthUsingLotsPower()) {
     console.log(':zap:')
-    notifier.notify({
-      title: 'Alert',
-      message: "Something's using lots of power. Better check.",
-      icon: path.join(__dirname, 'high-voltage-sign_26a1.png'),
-      wait: true
-    })
-    notifier.on('click', openActivityMonitor)
+    showNotification()
     return
   }
   console.log(':thumbsup:')
-})()
+}
+
+reportCpuAbuser()
