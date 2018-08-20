@@ -10,7 +10,7 @@ const findCulprit = r.pipe(
   r.filter(
     r.where({
       state: r.equals('running'),
-      pcpu: r.gt(r.__, 30)
+      pcpu: r.gt(r.__, 90)
     })
   ),
   r.sortBy(r.prop('pcpu')),
@@ -19,12 +19,13 @@ const findCulprit = r.pipe(
 
 const findCurrentCulprit = async () => findCulprit((await si.processes()).list)
 
+const ms = r.identity
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const isSthUsingLotsPower = async () => {
   const culprit1 = await findCurrentCulprit()
   if (!culprit1) return null
-  await sleep(500)
+  await sleep(ms(1000))
   const culprit2 = await findCurrentCulprit()
   if (culprit2 && r.eqBy(r.prop('command'), culprit1, culprit2)) return culprit2
 }
