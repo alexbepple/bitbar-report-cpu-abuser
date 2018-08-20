@@ -1,0 +1,8 @@
+{
+    "private": true,
+    "dependencies": {
+        "node-notifier": "^5.2.1",
+        "ramda": "^0.25.0",
+        "systeminformation": "^3.42.9"
+    }
+}
