@@ -3,6 +3,7 @@
 const r = require('ramda')
 const notifier = require('node-notifier')
 const si = require('systeminformation')
+const path = require('path')
 
 const findCulprit = r.pipe(
   r.filter(
@@ -29,7 +30,11 @@ const isSthUsingLotsPower = async () => {
 ;(async () => {
   if (await isSthUsingLotsPower()) {
     console.log(':zap:')
-    notifier.notify("Something's using lots of power. Better check.")
+    notifier.notify({
+      title: 'Alert',
+      message: "Something's using lots of power. Better check.",
+      icon: path.join(__dirname, 'high-voltage-sign_26a1.png')
+    })
     return
   }
   console.log(':thumbsup:')
