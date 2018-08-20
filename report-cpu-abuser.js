@@ -48,7 +48,7 @@ const reportCpuAbuser = async () => {
     showNotification()
     return
   }
-  console.log(':thumbsup:')
+  console.log('.')
 }
 
 reportCpuAbuser()
