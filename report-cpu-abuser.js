@@ -6,6 +6,9 @@ const si = require('systeminformation')
 const path = require('path')
 const opn = require('opn')
 
+// Treat the whitelist with care, as it means no abuse detection at all.
+const whitelist = ['bztransmit']
+
 const findCulprit = r.pipe(
   r.filter(
     r.where({
@@ -13,6 +16,7 @@ const findCulprit = r.pipe(
       pcpu: r.gt(r.__, 90)
     })
   ),
+  r.reject(r.where({ name: r.contains(r.__, whitelist) })),
   r.sortBy(r.prop('pcpu')),
   r.last
 )
