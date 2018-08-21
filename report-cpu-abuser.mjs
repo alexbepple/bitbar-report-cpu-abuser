@@ -35,12 +35,16 @@ const getCulprit = async () => {
 const openActivityMonitor = () =>
   opn('/Applications/Utilities/Activity Monitor.app', { wait: false })
 
-const reportViaNotification = (culprit) => {
+const getAbsolutePathForAsset = (relativePath) => {
   const __dirname = path.dirname(new URL(import.meta.url).pathname)
+  return path.join(__dirname, 'high-voltage-sign_26a1.png')
+}
+
+const reportViaNotification = (culprit) => {
   notifier.notify({
     title: 'CPU Usage Alert',
     message: `${pT.get.name(culprit)} is using lots of power.`,
-    icon: path.join(__dirname, 'high-voltage-sign_26a1.png'),
+    icon: getAbsolutePathForAsset('high-voltage-sign_26a1.png'),
     wait: true
   })
   notifier.on('click', openActivityMonitor)
