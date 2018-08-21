@@ -1,10 +1,10 @@
-#!/usr/bin/env /usr/local/bin/node
+#!/usr/bin/env /usr/local/bin/node --experimental-modules --no-warnings
 
-const r = require('ramda')
-const notifier = require('node-notifier')
-const si = require('systeminformation')
-const path = require('path')
-const opn = require('opn')
+import r from 'ramda'
+import notifier from 'node-notifier'
+import si from 'systeminformation'
+import path from 'path'
+import opn from 'opn'
 
 // Treat the whitelist with care, as it means no abuse detection at all.
 const whitelist = ['bztransmit']
@@ -38,6 +38,7 @@ const openActivityMonitor = () =>
   opn('/Applications/Utilities/Activity Monitor.app', { wait: false })
 
 const reportViaNotification = (culprit) => {
+  const __dirname = path.dirname(new URL(import.meta.url).pathname)
   notifier.notify({
     title: 'CPU Usage Alert',
     message: `${culprit.name} is using lots of power.`,
