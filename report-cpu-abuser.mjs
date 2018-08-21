@@ -5,19 +5,17 @@ import notifier from 'node-notifier'
 import si from 'systeminformation'
 import path from 'path'
 import opn from 'opn'
+import * as pT from './process-type'
 
 // Treat the whitelist with care, as it means no abuse detection at all.
 const whitelist = ['bztransmit']
 
 const findCulprit = r.pipe(
   r.filter(
-    r.where({
-      state: r.equals('running'),
-      pcpu: r.gt(r.__, 90)
-    })
+    r.both(pT.isRunning, r.where({ [pT.props.percentCpu]: r.gt(r.__, 90) }))
   ),
-  r.reject(r.where({ name: r.contains(r.__, whitelist) })),
-  r.sortBy(r.prop('pcpu')),
+  r.reject(r.where({ [pT.props.name]: r.contains(r.__, whitelist) })),
+  r.sortBy(pT.get.percentCpu),
   r.last
 )
 
@@ -41,7 +39,7 @@ const reportViaNotification = (culprit) => {
   const __dirname = path.dirname(new URL(import.meta.url).pathname)
   notifier.notify({
     title: 'CPU Usage Alert',
-    message: `${culprit.name} is using lots of power.`,
+    message: `${pT.get.name(culprit)} is using lots of power.`,
     icon: path.join(__dirname, 'high-voltage-sign_26a1.png'),
     wait: true
   })
@@ -50,7 +48,8 @@ const reportViaNotification = (culprit) => {
 
 const showInMenubar = console.log
 
-const reportInMenubar = (culprit) => showInMenubar(`:zap:${culprit.name}:zap:`)
+const reportInMenubar = (culprit) =>
+  showInMenubar(`:zap:${pT.get.name(culprit)}:zap:`)
 
 const reportCpuAbuser = async () => {
   const culprit = await getCulprit()
