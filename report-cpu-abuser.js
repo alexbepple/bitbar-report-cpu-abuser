@@ -26,7 +26,7 @@ const findCurrentCulprit = async () => findCulprit((await si.processes()).list)
 const ms = r.identity
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-const isSthUsingLotsPower = async () => {
+const getCulprit = async () => {
   const culprit1 = await findCurrentCulprit()
   if (!culprit1) return null
   await sleep(ms(1000))
@@ -37,23 +37,28 @@ const isSthUsingLotsPower = async () => {
 const openActivityMonitor = () =>
   opn('/Applications/Utilities/Activity Monitor.app', { wait: false })
 
-const showNotification = () => {
+const reportViaNotification = (culprit) => {
   notifier.notify({
-    title: 'Alert',
-    message: "Something's using lots of power. Better check.",
+    title: 'CPU Usage Alert',
+    message: `${culprit.name} is using lots of power.`,
     icon: path.join(__dirname, 'high-voltage-sign_26a1.png'),
     wait: true
   })
   notifier.on('click', openActivityMonitor)
 }
 
+const showInMenubar = console.log
+
+const reportInMenubar = (culprit) => showInMenubar(`:zap:${culprit.name}:zap:`)
+
 const reportCpuAbuser = async () => {
-  if (await isSthUsingLotsPower()) {
-    console.log(':zap:')
-    showNotification()
+  const culprit = await getCulprit()
+  if (culprit) {
+    reportInMenubar(culprit)
+    reportViaNotification(culprit)
     return
   }
-  console.log('.')
+  showInMenubar('.')
 }
 
 reportCpuAbuser()
