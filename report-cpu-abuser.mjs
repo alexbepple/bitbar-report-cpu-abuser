@@ -12,7 +12,7 @@ const whitelist = ['bztransmit']
 
 const findCulprit = r.pipe(
   r.filter(
-    r.both(pT.isRunning, r.where({ [pT.props.percentCpu]: r.gt(r.__, 90) }))
+    r.both(pT.isRunning, r.where({ [pT.props.percentCpu]: r.gt(r.__, 70) }))
   ),
   r.reject(r.where({ [pT.props.name]: r.contains(r.__, whitelist) })),
   r.sortBy(pT.get.percentCpu),
