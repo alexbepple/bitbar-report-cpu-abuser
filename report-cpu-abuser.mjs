@@ -5,7 +5,7 @@ import notifier from 'node-notifier'
 import si from 'systeminformation'
 import path from 'path'
 import opn from 'opn'
-import * as pT from './process-type'
+import * as pT from './process-type.mjs'
 
 // Treat the whitelist with care, as it means no abuse detection at all.
 const whitelist = ['bztransmit']
