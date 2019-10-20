@@ -27,7 +27,7 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const getCulprit = async () => {
   const culprit1 = await findCurrentCulprit()
   if (!culprit1) return null
-  await sleep(ms(1000))
+  await sleep(ms(2000))
   const culprit2 = await findCurrentCulprit()
   if (culprit2 && r.eqBy(r.prop('command'), culprit1, culprit2)) return culprit2
 }
