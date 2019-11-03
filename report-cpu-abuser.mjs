@@ -24,12 +24,25 @@ const findCurrentCulprit = async () => findCulprit((await si.processes()).list)
 const ms = r.identity
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+const isSameCommand = r.eqBy(r.prop('command'))
+
 const getCulprit = async () => {
   const culprit1 = await findCurrentCulprit()
   if (!culprit1) return null
-  await sleep(ms(2000))
+
+  await sleep(ms(5000))
+
   const culprit2 = await findCurrentCulprit()
-  if (culprit2 && r.eqBy(r.prop('command'), culprit1, culprit2)) return culprit2
+  if (!culprit2) return null
+  if (!isSameCommand(culprit1, culprit2)) return null
+
+  await sleep(ms(5000))
+
+  const culprit3 = await findCurrentCulprit()
+  if (!culprit3) return null
+  if (!isSameCommand(culprit1, culprit3)) return null
+
+  return culprit1
 }
 
 const openActivityMonitor = () =>
