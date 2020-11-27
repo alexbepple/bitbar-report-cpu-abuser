@@ -4,7 +4,7 @@
         "node-notifier": "^5.2.1",
         "opn": "^5.3.0",
         "ramda": "^0.25.0",
-        "systeminformation": "^3.42.9"
+        "systeminformation": "^4.30.5"
     },
     "devDependencies": {
         "prettier": "^1.14.2"
